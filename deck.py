@@ -1,10 +1,10 @@
 import random
 import math
 
-
+#import the deck with import deck new_deck = deck.Deck().
 class Deck:
     items = []
-
+    #make a new deck with new_deck.new_deck() and check it ith print(new_deck)
     def new_deck(self, include_jokers=False):
         suits = ["s", "d", "c", "h"]
         cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -18,6 +18,7 @@ class Deck:
             if suit == "d":
                 cards.reverse()
 
+    #for use inside of code draws a card randomly from the deck
     def _draw(self):
         if len(self.items) > 0:
             return self.items.pop(math.floor(len(self.items) * random.random()))
@@ -43,17 +44,29 @@ class Deck:
         num_of_cards = len(self.items)
         return f"{num_of_cards} cards"
 
-    def __init__(self):
-        self.items = []
+    def __init__(self, starting_cards = []):
+        if not isinstance(starting_cards, list):
+            print("Wrong format input a list")
+            return None
+        self.items = starting_cards
 
+    #use new_deck.shuffle() to randomize the order of the cards in the deck
     def shuffle(self):
         shuffled = []
         while len(self.items) > 0:
             shuffled.append(self._draw())
         self.items = shuffled
 
-    def draw(self):
-        if len(self.items) > 0:
-            return self.items.pop(0)
-        else:
+    #use new_deck.draw() to draw (X) cards
+    def draw(self, number_to_draw = 1):
+        if len(self.items) == 0:
             return "No Cards"
+        if number_to_draw > len(self.items):
+            return f"{len(self.items)} cards left"
+        return [self.items.pop(0) for _ in range(number_to_draw)]
+
+
+    def deal(self, number_to_draw = 1, number_of_hands = 0):
+        if number_of_hands == 0:
+            return Deck(self.draw(number_to_draw))
+        return [Deck(self.draw(number_to_draw)) for _ in range(number_of_hands)]
